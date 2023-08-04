@@ -1,20 +1,22 @@
 import { useState, useContext } from 'react';
-import { Navigate } from 'react-router';
 import { AppContext } from '../main';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import Main from '../pages/Main';
 
-export default function AuthenticatedRoute({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+export default function AuthenticatedRoute() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
   const { util, control } = useContext(AppContext);
   util.isLogin = () => isAuthenticated;
-  control.loginCheck = () => {
-    setIsAuthenticated(true);
-    console.log(isAuthenticated);
-  };
+  control.loginCheck = () => setIsAuthenticated(true);
   control.logoutCheck = () => setIsAuthenticated(false);
 
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return (
+    <Routes>
+      <Route path="/" element={<Main />} />
+    </Routes>
+  );
 }

@@ -7,7 +7,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Components from './pages/Components';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Main from './pages/Main';
 
 import LogoDarkLarge from './asset/logo/logo_dark_large.svg';
 import LogoDarkMedium from './asset/logo/logo_dark_medium.svg';
@@ -41,19 +40,10 @@ function App() {
       </ButtonSmall> */}
       <Router>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <AuthenticatedRoute>
-                <Routes>
-                  <Route path='/' element={<Main />} />
-                </Routes>
-              </AuthenticatedRoute>
-            }
-          />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/component" element={<Components />} />
+          <Route path="/*" element={<AuthenticatedRoute />} />
         </Routes>
       </Router>
     </ThemeProvider>
