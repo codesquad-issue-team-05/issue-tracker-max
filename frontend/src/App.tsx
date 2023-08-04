@@ -13,24 +13,34 @@ import LogoDarkMedium from './asset/logo/logo_dark_medium.svg';
 import LogoLightLarge from './asset/logo/logo_light_large.svg';
 import LogoLightMedium from './asset/logo/logo_light_medium.svg';
 import { AppContext } from './main';
-import AuthenticatedRoute from './routes/AuthenticatedRoute';
+import Authenticate from './routers/Authenticate';
 
 function App() {
   const [isLight, setIsLight] = useState<boolean>(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { util, control } = useContext(AppContext);
-  util.getLogoByTheme = () =>
-    isLight
-      ? {
-          large: LogoLightLarge,
-          medium: LogoLightMedium,
-        }
-      : {
-          large: LogoDarkLarge,
-          medium: LogoDarkMedium,
-        };
-  control.changeTheme = () => {
-    setIsLight(!isLight);
-  };
+
+  Object.assign(util, {
+    getLogoByTheme: () =>
+      isLight
+        ? {
+            large: LogoLightLarge,
+            medium: LogoLightMedium,
+          }
+        : {
+            large: LogoDarkLarge,
+            medium: LogoDarkMedium,
+          },
+    isLogin: () => isAuthenticated,
+  });
+
+  Object.assign(control, {
+    changeTheme: () => {
+      setIsLight(!isLight);
+    },
+    loginCheck: () => setIsAuthenticated(true),
+    logoutCheck: () => setIsAuthenticated(false),
+  });
 
   return (
     <ThemeProvider theme={isLight ? lightTheme : darkTheme}>
@@ -43,7 +53,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/component" element={<Components />} />
-          <Route path="/*" element={<AuthenticatedRoute />} />
+          <Route path="/*" element={<Authenticate />} />
         </Routes>
       </Router>
     </ThemeProvider>

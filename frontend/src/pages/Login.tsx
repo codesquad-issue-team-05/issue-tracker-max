@@ -24,9 +24,7 @@ export default function Login() {
       if (res.status === 200) {
         control.loginCheck();
       }
-      setTimeout(() => {
-        navigate('/');
-      }, 10);
+      navigate('/');
     })();
   };
 
