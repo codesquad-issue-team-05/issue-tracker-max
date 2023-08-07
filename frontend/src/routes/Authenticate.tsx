@@ -1,14 +1,15 @@
-import { AppContext } from '../main';
 import { useContext } from 'react';
-import Main from '../pages/Main';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate } from 'react-router';
+import { Routes, Route } from 'react-router-dom';
+import { AppContext } from '../main';
+import IssueList from '../pages/IssueList';
 
 export default function Authenticate() {
   const { util } = useContext(AppContext);
 
   return util.isLogin() ? (
     <Routes>
-      <Route path="/" element={<Main />} />
+      <Route path="/" element={<IssueList />} />
     </Routes>
   ) : (
     <Navigate to="/login" replace />

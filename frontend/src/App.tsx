@@ -13,11 +13,11 @@ import LogoDarkMedium from './asset/logo/logo_dark_medium.svg';
 import LogoLightLarge from './asset/logo/logo_light_large.svg';
 import LogoLightMedium from './asset/logo/logo_light_medium.svg';
 import { AppContext } from './main';
-import Authenticate from './routers/Authenticate';
+import Authenticate from './routes/Authenticate';
 
 function App() {
   const [isLight, setIsLight] = useState<boolean>(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const { util, control } = useContext(AppContext);
 
   Object.assign(util, {

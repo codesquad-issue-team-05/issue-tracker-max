@@ -13,7 +13,7 @@ const { Default, Left, Right } = ButtonActive;
 export default function TabButton() {
   const [buttonActive, setButtonActive] = useState<ButtonActive>(Default);
   return (
-    <Tab $buttonActive={buttonActive}>
+    <Container $buttonActive={buttonActive}>
       <Button
         type="button"
         flexible
@@ -31,36 +31,39 @@ export default function TabButton() {
         onClick={() => setButtonActive(Right)}>
         BUTTON
       </Button>
-    </Tab>
+    </Container>
   );
 }
 
-const Tab = styled.div<{ $buttonActive: ButtonActive }>`
+const Container = styled.div<{ $buttonActive: ButtonActive }>`
+  width: 320px;
   display: inline-flex;
   border: 1px solid ${({ theme }) => theme.color.neutral.border.default};
   border-radius: ${({ theme }) => theme.objectStyles.radius.medium};
   overflow: hidden;
 
-  button {
+  & > button {
+    width: 100%;
     box-sizing: content-box;
-  }
-  button:first-child {
-    background-color: ${({ theme, $buttonActive }) => {
-      return $buttonActive === Left
-        ? theme.color.neutral.surface.bold
-        : theme.color.neutral.surface.default;
-    }};
-  }
-  button:last-child {
-    background-color: ${({ theme, $buttonActive }) => {
-      return $buttonActive === Right
-        ? theme.color.neutral.surface.bold
-        : theme.color.neutral.surface.default;
-    }};
+    &:first-child {
+      background-color: ${({ theme, $buttonActive }) => {
+        return $buttonActive === Left
+          ? theme.color.neutral.surface.bold
+          : theme.color.neutral.surface.default;
+      }};
+    }
+    &:last-child {
+      background-color: ${({ theme, $buttonActive }) => {
+        return $buttonActive === Right
+          ? theme.color.neutral.surface.bold
+          : theme.color.neutral.surface.default;
+      }};
+    }
   }
 `;
 
 const Vertical = styled.div`
   width: 1px;
+  flex-shrink: 0;
   background-color: ${({ theme }) => theme.color.neutral.border.default};
 `;

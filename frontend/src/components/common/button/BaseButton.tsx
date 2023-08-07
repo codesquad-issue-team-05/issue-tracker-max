@@ -24,7 +24,9 @@ export default function Button(props: ButtonProps) {
     ...rest
   } = props;
   const hasIcon = iconName !== undefined;
-  const Icon = Icons[iconName ?? 'default'];
+  const Icon = Icons[iconName ?? 'default'] as React.FunctionComponent<
+    React.SVGProps<SVGSVGElement>
+  >;
 
   return (
     <RealButton
@@ -110,6 +112,7 @@ const RealButton = styled.button<StyledButtonProps>`
     border: none;
     border-radius: 0;
     color: ${theme.color.neutral.text.default};
+    height: auto;
 
     svg {
       path {

@@ -10,11 +10,19 @@ import { ReactComponent as PaperClip } from '../asset/icons/paperclip.svg';
 import { ReactComponent as Edit } from '../asset/icons/edit.svg';
 import { ReactComponent as Smile } from '../asset/icons/smile.svg';
 import { ReactComponent as Search } from '../asset/icons/search.svg';
+import { ReactComponent as CheckBoxInitial } from '../asset/icons/check_box_initial.svg';
+import { ReactComponent as CheckBoxDisable } from '../asset/icons/check_box_disable.svg';
+import { ReactComponent as CheckBoxActive } from '../asset/icons/check_box_active.svg';
+import { ReactComponent as Archive } from '../asset/icons/archive.svg';
+import CheckBox from '../constant/CheckBox';
+
+const { initial, disable, active } = CheckBox;
 
 const Icons = {
   plus: Plus,
   refresh: ReFresh,
   alertCircle: AlertCircle,
+  archive: Archive,
   chevronDown: ChevronDown,
   userImageSmall: UserImageSmall,
   userImageLarge: userImageLarge,
@@ -25,6 +33,11 @@ const Icons = {
   smile: Smile,
   search: Search,
   default: Plus,
+  checkbox: {
+    [initial]: CheckBoxInitial,
+    [disable]: CheckBoxDisable,
+    [active]: CheckBoxActive,
+  },
 } as const;
 
 export default Icons;
