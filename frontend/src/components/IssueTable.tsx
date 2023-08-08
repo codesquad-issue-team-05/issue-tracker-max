@@ -60,6 +60,9 @@ export default function IssueTable() {
           </Right>
         </Buttons>
       </IssueTableHeading>
+      <IssueTableBody>
+        <IssueTableItem></IssueTableItem>
+      </IssueTableBody>
     </Container>
   );
 }
@@ -68,7 +71,7 @@ const Container = styled.article`
   background-color: ${({ theme }) => theme.color.neutral.surface.default};
   border: 1px solid ${({ theme }) => theme.color.neutral.border.default};
   overflow: hidden;
-  border-radius: ${({theme}) => theme.objectStyles.radius.large};
+  border-radius: ${({ theme }) => theme.objectStyles.radius.large};
   & > h3 {
     &:first-child {
       border-bottom: 1px solid
@@ -115,3 +118,7 @@ const Buttons = styled.div`
 const Left = styled.ul``;
 
 const Right = styled.ul``;
+
+const IssueTableBody = styled.ul``;
+
+const IssueTableItem = styled.li``;
