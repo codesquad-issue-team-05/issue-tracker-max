@@ -120,4 +120,21 @@ class CommentControllerTest {
     private CommentRequestDto dummyCommentRequestDto() {
         return new CommentRequestDto("post comment test1");
     }
+
+    @Test
+    @DisplayName("이슈 댓글을 수정한다.")
+    public void modify() throws Exception {
+        //given
+        given(commentService.modify(any(), any())).willReturn(1L);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(patch("/api/issues/comments/{commentId}", 1L)
+                .content(objectMapper.writeValueAsString(dummyCommentRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(SUCCESS.getStatus().getReasonPhrase()))
+                .andExpect(jsonPath("$.message").value(SUCCESS.getMessage()));
+    }
 }

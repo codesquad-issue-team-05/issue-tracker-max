@@ -46,7 +46,7 @@ public class CommentController {
 
 	@PatchMapping("/issues/comments/{commentId}")
 	public ApiResponse<String> modify(@PathVariable Long commentId,
-		@RequestBody CommentRequestDto commentRequestDto) {
+										@RequestBody CommentRequestDto commentRequestDto) {
 		commentService.modify(commentId, commentRequestDto);
 		return ApiResponse.success(SUCCESS.getStatus(), SUCCESS.getMessage());
 	}
