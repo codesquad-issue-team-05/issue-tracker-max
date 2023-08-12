@@ -161,4 +161,19 @@ class CommentServiceTest extends CommentTestFixture {
                 });
     }
 
+    @Test
+    @DisplayName("존재하지 않는 댓글인 경우 댓글 삭제에 실패한다.")
+    public void delete_fail_not_exist() throws Exception {
+        //given
+        given(commentRepository.findById(1L)).willReturn(Optional.empty());
+
+        //when & then
+        assertThatThrownBy(() -> commentService.delete(1L))
+                .isInstanceOf(CustomException.class)
+                .satisfies(e -> {
+                    CustomException customException = (CustomException) e;
+                    assertThat(customException.getStatusCode()).isEqualTo(NOT_EXIST_COMMENT);
+                });
+    }
+
 }
