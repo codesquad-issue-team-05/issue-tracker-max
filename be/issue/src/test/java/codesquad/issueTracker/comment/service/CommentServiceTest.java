@@ -1,5 +1,6 @@
 package codesquad.issueTracker.comment.service;
 
+import static codesquad.issueTracker.global.exception.ErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
@@ -12,11 +13,11 @@ import codesquad.issueTracker.comment.dto.CommentResponseDto;
 import codesquad.issueTracker.comment.fixture.CommentTestFixture;
 import codesquad.issueTracker.comment.repository.CommentRepository;
 import codesquad.issueTracker.global.exception.CustomException;
+import codesquad.issueTracker.global.exception.ErrorCode;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -107,7 +108,26 @@ class CommentServiceTest extends CommentTestFixture {
 
         //when & then
         assertThatThrownBy(() -> commentService.modify(1L, commentRequestDtoFixture))
-                .isInstanceOf(CustomException.class);
+                .isInstanceOf(CustomException.class)
+                .satisfies(e -> {
+                    CustomException customException = (CustomException) e;
+                    assertThat(customException.getStatusCode()).isEqualTo(ALREADY_DELETED_COMMENT);
+                });
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 댓글인 경우 댓글 수정에 실패한다.")
+    public void update_success_not_exist() throws Exception {
+        //given
+        given(commentRepository.findById(1L)).willReturn(Optional.empty());
+
+        //when & then
+        assertThatThrownBy(() -> commentService.modify(1L, commentRequestDtoFixture))
+                .isInstanceOf(CustomException.class)
+                .satisfies(e -> {
+                    CustomException customException = (CustomException) e;
+                    assertThat(customException.getStatusCode()).isEqualTo(NOT_EXIST_COMMENT);
+                });
     }
 
 }
