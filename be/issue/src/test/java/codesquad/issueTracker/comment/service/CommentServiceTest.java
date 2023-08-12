@@ -1,12 +1,15 @@
 package codesquad.issueTracker.comment.service;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import annotation.ServiceTest;
+import codesquad.issueTracker.comment.dto.CommentRequestDto;
 import codesquad.issueTracker.comment.dto.CommentResponseDto;
 import codesquad.issueTracker.comment.fixture.CommentTestFixture;
 import codesquad.issueTracker.comment.repository.CommentRepository;
 import java.util.List;
+import java.util.Optional;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.assertj.core.api.Assertions;
@@ -21,6 +24,7 @@ class CommentServiceTest extends CommentTestFixture {
 
     private final Log log = LogFactory.getLog(CommentServiceTest.class);
     private List<CommentResponseDto> commentResponseDtosFixture;
+    private CommentRequestDto commentRequestDtoFixture;
 
     @InjectMocks
     CommentService commentService;
@@ -31,6 +35,7 @@ class CommentServiceTest extends CommentTestFixture {
     @BeforeEach
     public void setUp() {
         commentResponseDtosFixture = dummyCommentResponseDto();
+        commentRequestDtoFixture = dummyCommentRequestDto();
     }
 
     @Test
@@ -46,6 +51,19 @@ class CommentServiceTest extends CommentTestFixture {
         Assertions.assertThat(actual)
                 .usingRecursiveComparison()
                 .isEqualTo(commentResponseDtosFixture);
+    }
+    
+    @Test
+    @DisplayName("댓글 생성에 성공한다.")
+    public void save_success() throws Exception {
+        //given
+        given(commentRepository.create(any(), any(), any())).willReturn(Optional.ofNullable(1L));
+        
+        //when
+        Long actual = commentService.save(1L, 1L, commentRequestDtoFixture);
+        
+        //then
+        Assertions.assertThat(actual).isEqualTo(1L);
     }
 
 
