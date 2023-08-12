@@ -1,16 +1,18 @@
 package codesquad.issueTracker.comment.controller;
 
 
+import static codesquad.issueTracker.global.exception.SuccessCode.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import annotation.ControllerTest;
 import codesquad.issueTracker.comment.domain.Comment;
+import codesquad.issueTracker.comment.dto.CommentRequestDto;
 import codesquad.issueTracker.comment.dto.CommentResponseDto;
 import codesquad.issueTracker.comment.service.CommentService;
 import codesquad.issueTracker.comment.vo.CommentUserVo;
-import codesquad.issueTracker.global.exception.SuccessCode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +23,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -31,6 +34,9 @@ class CommentControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private CommentService commentService;
@@ -47,7 +53,7 @@ class CommentControllerTest {
         //then
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value(SuccessCode.SUCCESS.getStatus().getReasonPhrase()))
+                .andExpect(jsonPath("$.status").value(SUCCESS.getStatus().getReasonPhrase()))
                 .andExpect(jsonPath("$.message[0].id").value(1))
                 .andExpect(jsonPath("$.message[0].createdAt").value(dummyLocalDateTime().toString()))
                 .andExpect(jsonPath("$.message[0].content").value("comment content1"))
@@ -92,5 +98,26 @@ class CommentControllerTest {
                 .name("sio")
                 .profileImg("https://upload.wikimedia.org/wikipedia/commons/1/17/Enhydra_lutris_face.jpg")
                 .build();
+    }
+
+    @Test
+    @DisplayName("이슈 댓글을 작성한다.")
+    public void save() throws Exception {
+        //given
+        given(commentService.save(any(), any(), any())).willReturn(1L);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post("/api/issues/{issueId}/comments", 1L)
+                .content(objectMapper.writeValueAsString(dummyCommentRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(SUCCESS.getStatus().getReasonPhrase()))
+                .andExpect(jsonPath("$.message").value(SUCCESS.getMessage()));
+    }
+
+    private CommentRequestDto dummyCommentRequestDto() {
+        return new CommentRequestDto("post comment test1");
     }
 }

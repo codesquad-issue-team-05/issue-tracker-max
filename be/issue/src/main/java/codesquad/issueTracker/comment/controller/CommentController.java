@@ -37,8 +37,8 @@ public class CommentController {
 
 	@PostMapping("/issues/{issueId}/comments")
 	public ApiResponse<String> save(@PathVariable Long issueId,
-		@RequestBody CommentRequestDto commentRequestDto,
-		HttpServletRequest request) {
+									@RequestBody CommentRequestDto commentRequestDto,
+									HttpServletRequest request) {
 		commentService.save(request, issueId, commentRequestDto);
 
 		return ApiResponse.success(SUCCESS.getStatus(), SUCCESS.getMessage());
