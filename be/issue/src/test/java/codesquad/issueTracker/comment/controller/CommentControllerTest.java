@@ -26,6 +26,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 
 @ControllerTest(CommentController.class)
 class CommentControllerTest {
@@ -131,6 +133,21 @@ class CommentControllerTest {
         ResultActions resultActions = mockMvc.perform(patch("/api/issues/comments/{commentId}", 1L)
                 .content(objectMapper.writeValueAsString(dummyCommentRequestDto()))
                 .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(SUCCESS.getStatus().getReasonPhrase()))
+                .andExpect(jsonPath("$.message").value(SUCCESS.getMessage()));
+    }
+
+    @Test
+    @DisplayName("이슈 댓글을 삭제한다.")
+    public void delete() throws Exception {
+        //given
+        given(commentService.delete(any())).willReturn(1L);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/api/issues/comments/{commentId}", 1L));
 
         //then
         resultActions.andExpect(status().isOk())
