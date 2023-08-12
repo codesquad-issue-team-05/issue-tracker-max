@@ -145,4 +145,20 @@ class CommentServiceTest extends CommentTestFixture {
         assertThat(actual).isEqualTo(1L);
     }
 
+    @Test
+    @DisplayName("이미 댓글이 삭제된 상태인 경우 댓글 삭제에 실패한다.")
+    public void delete_fail_already_deleted() throws Exception {
+        //given
+        given(commentRepository.findById(1L)).willReturn(Optional.ofNullable(commentFixture));
+        given(commentRepository.findExistCommentById(any())).willReturn(Optional.empty());
+
+        //when & then
+        assertThatThrownBy(() -> commentService.delete(1L))
+                .isInstanceOf(CustomException.class)
+                .satisfies(e -> {
+                    CustomException customException = (CustomException) e;
+                    assertThat(customException.getStatusCode()).isEqualTo(ALREADY_DELETED_COMMENT);
+                });
+    }
+
 }
