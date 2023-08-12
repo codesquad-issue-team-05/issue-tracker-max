@@ -99,4 +99,20 @@ class CommentRepositoryTest extends CommentTestFixture {
         //then
         assertThat(actual.getContent()).isEqualTo(commentRequestDtoFixture2.getContent());
     }
+
+    @Test
+    @DisplayName("DB에 댓글 삭제가 제대로 반영된다.")
+    public void delete() throws Exception {
+        //given
+        Long userId = 1L;
+        Long issueId = 1L;
+        Long commentId = commentRepository.create(userId, issueId, commentRequestDtoFixture1).get();
+
+        //when
+        Long deletedId = commentRepository.deleteById(commentId).get();
+        Optional<Comment> actual = commentRepository.findExistCommentById(deletedId);
+
+        //then
+        assertThat(actual.isPresent()).isEqualTo(false);
+    }
 }
