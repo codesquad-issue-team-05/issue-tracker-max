@@ -51,4 +51,14 @@ public abstract class CommentTestFixture {
     public CommentRequestDto dummyCommentRequestDto() {
         return new CommentRequestDto("post comment test1");
     }
+
+    public Comment dummyComment() {
+        return Comment.builder()
+                .id(1L)
+                .issueId(1L)
+                .userId(1L)
+                .content("dummy comment")
+                .createdAt(LocalDateTime.of(2023, 8, 13, 1, 20, 10))
+                .build();
+    }
 }

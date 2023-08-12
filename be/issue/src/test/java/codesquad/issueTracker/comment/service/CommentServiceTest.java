@@ -1,10 +1,12 @@
 package codesquad.issueTracker.comment.service;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import annotation.ServiceTest;
+import codesquad.issueTracker.comment.domain.Comment;
 import codesquad.issueTracker.comment.dto.CommentRequestDto;
 import codesquad.issueTracker.comment.dto.CommentResponseDto;
 import codesquad.issueTracker.comment.fixture.CommentTestFixture;
@@ -27,6 +29,7 @@ class CommentServiceTest extends CommentTestFixture {
     private final Log log = LogFactory.getLog(CommentServiceTest.class);
     private List<CommentResponseDto> commentResponseDtosFixture;
     private CommentRequestDto commentRequestDtoFixture;
+    private Comment commentFixture;
 
     @InjectMocks
     CommentService commentService;
@@ -38,6 +41,7 @@ class CommentServiceTest extends CommentTestFixture {
     public void setUp() {
         commentResponseDtosFixture = dummyCommentResponseDto();
         commentRequestDtoFixture = dummyCommentRequestDto();
+        commentFixture = dummyComment();
     }
 
     @Test
@@ -74,10 +78,24 @@ class CommentServiceTest extends CommentTestFixture {
         //given
         given(commentRepository.create(any(), any(), any())).willReturn(Optional.empty());
 
-        //when
+        //when & then
         assertThatThrownBy(() -> commentService.save(1L, 1L, commentRequestDtoFixture))
                 .isInstanceOf(CustomException.class);
     }
 
+    @Test
+    @DisplayName("댓글 수정에 성공한다.")
+    public void update_success() throws Exception {
+        //given
+        given(commentRepository.findExistCommentById(1L)).willReturn(Optional.ofNullable(commentFixture));
+        given(commentRepository.findById(1L)).willReturn(Optional.ofNullable(commentFixture));
+        given(commentRepository.update(any(), any())).willReturn(Optional.ofNullable(1L));
+        
+        //when
+        Long actual = commentService.modify(1L, commentRequestDtoFixture);
+
+        //then
+        assertThat(actual).isEqualTo(1L);
+    }
 
 }
