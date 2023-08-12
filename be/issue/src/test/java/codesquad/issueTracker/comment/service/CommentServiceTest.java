@@ -104,6 +104,23 @@ class CommentServiceTest extends CommentTestFixture {
     }
 
     @Test
+    @DisplayName("DB 서버 오류로 인해 댓글 수정에 실패한다.")
+    public void update_fail() throws Exception {
+        //given
+        given(commentRepository.findExistCommentById(1L)).willReturn(Optional.ofNullable(commentFixture));
+        given(commentRepository.findById(1L)).willReturn(Optional.ofNullable(commentFixture));
+        given(commentRepository.update(any(), any())).willReturn(Optional.empty());
+
+        //when & then
+        assertThatThrownBy(() -> commentService.modify(1L, commentRequestDtoFixture))
+                .isInstanceOf(CustomException.class)
+                .satisfies(e -> {
+                    CustomException customException = (CustomException) e;
+                    assertThat(customException.getStatusCode()).isEqualTo(FAILED_UPDATE_COMMENT);
+                });
+    }
+
+    @Test
     @DisplayName("이미 삭제된 상태인 댓글일 경우 댓글 수정에 실패한다.")
     public void update_fail_already_deleted() throws Exception {
         //given
