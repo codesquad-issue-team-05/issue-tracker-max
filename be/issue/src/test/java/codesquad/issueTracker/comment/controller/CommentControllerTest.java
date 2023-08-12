@@ -45,8 +45,8 @@ class CommentControllerTest extends CommentTestFixture {
 
     @BeforeEach
     public void setUp() {
-        commentResponseDtosFixture = dummyCommentResponseDto();
-        commentRequestDtoFixture = dummyCommentRequestDto();
+        commentResponseDtosFixture = dummyCommentResponseDtos();
+        commentRequestDtoFixture = dummyCommentRequestDto(1);
     }
 
     @Test

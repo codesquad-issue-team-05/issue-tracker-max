@@ -2,7 +2,6 @@ package codesquad.issueTracker.comment.service;
 
 import static codesquad.issueTracker.global.exception.ErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -13,7 +12,6 @@ import codesquad.issueTracker.comment.dto.CommentResponseDto;
 import codesquad.issueTracker.comment.fixture.CommentTestFixture;
 import codesquad.issueTracker.comment.repository.CommentRepository;
 import codesquad.issueTracker.global.exception.CustomException;
-import codesquad.issueTracker.global.exception.ErrorCode;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.logging.Log;
@@ -40,9 +38,9 @@ class CommentServiceTest extends CommentTestFixture {
 
     @BeforeEach
     public void setUp() {
-        commentResponseDtosFixture = dummyCommentResponseDto();
-        commentRequestDtoFixture = dummyCommentRequestDto();
-        commentFixture = dummyComment();
+        commentResponseDtosFixture = dummyCommentResponseDtos();
+        commentRequestDtoFixture = dummyCommentRequestDto(1);
+        commentFixture = dummyComment(1);
     }
 
     @Test

@@ -10,14 +10,14 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public abstract class CommentTestFixture {
-    public List<CommentResponseDto> dummyCommentResponseDto() {
+    public List<CommentResponseDto> dummyCommentResponseDtos() {
         return IntStream.range(1, 4)
                 .mapToObj(this::makeCommentResponses)
                 .collect(Collectors.toList());
     }
 
     private CommentResponseDto makeCommentResponses(int num) {
-        Comment comment = makeComment(num);
+        Comment comment = dummyComment(num);
         CommentUserVo commentUserVo = makeCommentUser();
 
         return CommentResponseDto.builder()
@@ -28,11 +28,11 @@ public abstract class CommentTestFixture {
                 .build();
     }
 
-    private Comment makeComment(int num) {
+    public Comment dummyComment(int num) {
         return Comment.builder()
                 .issueId(1L)
                 .userId(1L)
-                .content("comment content" + num)
+                .content("comment test" + num)
                 .createdAt(dummyLocalDateTime())
                 .build();
     }
@@ -44,21 +44,17 @@ public abstract class CommentTestFixture {
     private CommentUserVo makeCommentUser() {
         return CommentUserVo.builder()
                 .name("sio")
-                .profileImg("https://upload.wikimedia.org/wikipedia/commons/1/17/Enhydra_lutris_face.jpg")
+                .profileImg("http://image.png")
                 .build();
     }
 
-    public CommentRequestDto dummyCommentRequestDto() {
-        return new CommentRequestDto("post comment test1");
+    public List<CommentRequestDto> dummyCommentRequestDtos() {
+        return IntStream.range(1, 4)
+                .mapToObj(this::dummyCommentRequestDto)
+                .collect(Collectors.toList());
     }
 
-    public Comment dummyComment() {
-        return Comment.builder()
-                .id(1L)
-                .issueId(1L)
-                .userId(1L)
-                .content("dummy comment")
-                .createdAt(LocalDateTime.of(2023, 8, 13, 1, 20, 10))
-                .build();
+    public CommentRequestDto dummyCommentRequestDto(int num) {
+        return new CommentRequestDto("comment test" + num);
     }
 }
