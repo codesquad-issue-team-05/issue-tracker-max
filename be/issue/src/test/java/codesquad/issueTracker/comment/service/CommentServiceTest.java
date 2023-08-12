@@ -81,7 +81,11 @@ class CommentServiceTest extends CommentTestFixture {
 
         //when & then
         assertThatThrownBy(() -> commentService.save(1L, 1L, commentRequestDtoFixture))
-                .isInstanceOf(CustomException.class);
+                .isInstanceOf(CustomException.class)
+                .satisfies(e -> {
+                    CustomException customException = (CustomException) e;
+                    assertThat(customException.getStatusCode()).isEqualTo(FAILED_CREATE_COMMENT);
+                });
     }
 
     @Test
