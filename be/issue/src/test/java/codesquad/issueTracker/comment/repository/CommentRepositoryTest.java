@@ -115,4 +115,19 @@ class CommentRepositoryTest extends CommentTestFixture {
         //then
         assertThat(actual.isPresent()).isEqualTo(false);
     }
+
+    @Test
+    @DisplayName("findById 동작 테스트")
+    public void findById() throws Exception {
+        //given
+        Long userId = 1L;
+        Long issueId = 1L;
+        Long commentId = commentRepository.create(userId, issueId, commentRequestDtoFixture1).get();
+
+        //when
+        Comment actual = commentRepository.findById(commentId).get();
+
+        //then
+        assertThat(actual.getId()).isEqualTo(commentId);
+    }
 }
