@@ -130,4 +130,19 @@ class CommentServiceTest extends CommentTestFixture {
                 });
     }
 
+    @Test
+    @DisplayName("댓글 삭제에 성공한다.")
+    public void delete_success() throws Exception {
+        //given
+        given(commentRepository.findExistCommentById(1L)).willReturn(Optional.ofNullable(commentFixture));
+        given(commentRepository.findById(1L)).willReturn(Optional.ofNullable(commentFixture));
+        given(commentRepository.deleteById(any())).willReturn(Optional.of(1L));
+
+        //when
+        Long actual = commentService.delete(1L);
+
+        //then
+        assertThat(actual).isEqualTo(1L);
+    }
+
 }
