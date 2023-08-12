@@ -3,6 +3,7 @@ package codesquad.issueTracker.comment.repository;
 import static org.assertj.core.api.Assertions.*;
 
 import annotation.RepositoryTest;
+import codesquad.issueTracker.comment.domain.Comment;
 import codesquad.issueTracker.comment.dto.CommentRequestDto;
 import codesquad.issueTracker.comment.dto.CommentResponseDto;
 import codesquad.issueTracker.comment.fixture.CommentTestFixture;
@@ -10,6 +11,7 @@ import codesquad.issueTracker.user.domain.LoginType;
 import codesquad.issueTracker.user.domain.User;
 import codesquad.issueTracker.user.repository.UserRepository;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +22,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @RepositoryTest
 class CommentRepositoryTest extends CommentTestFixture {
 
-    private CommentRequestDto commentRequestDtoFixture;
+    private CommentRequestDto commentRequestDtoFixture1;
+    private CommentRequestDto commentRequestDtoFixture2;
     private List<CommentRequestDto> commentRequestDtosFixture;
     private List<CommentResponseDto> commentResponseDtosFixture;
 
@@ -35,7 +38,8 @@ class CommentRepositoryTest extends CommentTestFixture {
 
     @BeforeEach
     public void setUp() {
-        commentRequestDtoFixture = dummyCommentRequestDto(1);
+        commentRequestDtoFixture1 = dummyCommentRequestDto(1);
+        commentRequestDtoFixture2 = dummyCommentRequestDto(2);
         commentRequestDtosFixture = dummyCommentRequestDtos();
         commentResponseDtosFixture = dummyCommentResponseDtos();
     }
@@ -48,7 +52,7 @@ class CommentRepositoryTest extends CommentTestFixture {
         Long issueId = 1L;
 
         //when
-        Long actual = commentRepository.create(userId, issueId, commentRequestDtoFixture).get();
+        Long actual = commentRepository.create(userId, issueId, commentRequestDtoFixture1).get();
 
         //then
         assertThat(actual).isEqualTo(1L);
@@ -78,5 +82,21 @@ class CommentRepositoryTest extends CommentTestFixture {
 
         //then
         assertThat(actual.get(0).getId()).isEqualTo(commentResponseDtosFixture.get(0).getId());
+    }
+
+    @Test
+    @DisplayName("DB에 댓글 수정 데이터가 제대로 반영된다.")
+    public void update() throws Exception {
+        //given
+        Long userId = 1L;
+        Long issueId = 1L;
+        commentRepository.create(userId, issueId, commentRequestDtoFixture1);
+
+        //when
+        Long updatedId = commentRepository.update(userId, commentRequestDtoFixture2).get();
+        Comment actual = commentRepository.findById(updatedId).get();
+
+        //then
+        assertThat(actual.getContent()).isEqualTo(commentRequestDtoFixture2.getContent());
     }
 }
