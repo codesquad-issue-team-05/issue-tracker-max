@@ -1,5 +1,6 @@
 package codesquad.issueTracker.comment.service;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -8,6 +9,7 @@ import codesquad.issueTracker.comment.dto.CommentRequestDto;
 import codesquad.issueTracker.comment.dto.CommentResponseDto;
 import codesquad.issueTracker.comment.fixture.CommentTestFixture;
 import codesquad.issueTracker.comment.repository.CommentRepository;
+import codesquad.issueTracker.global.exception.CustomException;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.logging.Log;
@@ -48,7 +50,7 @@ class CommentServiceTest extends CommentTestFixture {
         List<CommentResponseDto> actual = commentService.getComments(1L);
 
         //then
-        Assertions.assertThat(actual)
+        assertThat(actual)
                 .usingRecursiveComparison()
                 .isEqualTo(commentResponseDtosFixture);
     }
@@ -63,7 +65,18 @@ class CommentServiceTest extends CommentTestFixture {
         Long actual = commentService.save(1L, 1L, commentRequestDtoFixture);
         
         //then
-        Assertions.assertThat(actual).isEqualTo(1L);
+        assertThat(actual).isEqualTo(1L);
+    }
+
+    @Test
+    @DisplayName("DB 서버 오류로 인해 댓글 생성에 실패한다.")
+    public void save_fail() throws Exception {
+        //given
+        given(commentRepository.create(any(), any(), any())).willReturn(Optional.empty());
+
+        //when
+        assertThatThrownBy(() -> commentService.save(1L, 1L, commentRequestDtoFixture))
+                .isInstanceOf(CustomException.class);
     }
 
 
