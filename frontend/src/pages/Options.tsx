@@ -7,8 +7,12 @@ import Main from '../components/landmark/Main';
 import Toolbar from '../components/landmark/Toolbar';
 import TabButtonComponent from '../components/common/TabButton';
 import Layout from '../components/Layout';
-import axios from '../api/axios';
 import Button from '../components/common/button/BaseButton';
+import Labels from '../components/label/Labels';
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
+import Milestones from '../components/milestone/Milestones';
+import AddLabel from '../components/label/AddLabel';
+import AddMilestone from '../components/milestone/AddMilestone';
 
 enum Option {
   labels,
@@ -21,29 +25,35 @@ const TabButton = React.memo(TabButtonComponent);
 
 export default function Options() {
   const { util } = useContext(AppContext);
-  const [activeOption, setActiveOption] = useState<Option>(labels);
-  // const [labels, setLabels] = useState([]);
-  // const [milestones, setMilestones] = useState([]);
+  const [activeOption, setActiveOption] = useState<Option>(milestones);
+  const [labelData, setLabelData] = useState([]);
+  const [milestoneData, setMilestoneData] = useState([]);
+  const [addFormActive, setAddFormActive] = useState(true);
+  const axiosPrivate = useAxiosPrivate();
+
+  function addCancelHandler() {
+    setAddFormActive(false);
+  }
 
   useEffect(() => {
-    (async () => {
-      const headers = {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-      };
-      const fetch =
-        activeOption === labels
-          ? () => axios.get('api/labels', { headers })
-          : () => axios.get('api/milestones', { headers });
+    const fetchData = async () => {
+      const requestPath =
+        activeOption === labels ? 'api/labels' : 'api/milestones';
 
-      const res = await fetch();
-      console.log(res.data);
-      // if (activeOption === label) {
-      //   setLabels(res.data);
-      // } else {
-      //   setMilestones(res.data);
-      // }
-    })();
-  }, [activeOption]);
+      try {
+        const res = await axiosPrivate.get(requestPath);
+        if (activeOption === labels) {
+          setLabelData(res.data.message.labels);
+        } else {
+          setMilestoneData(res.data.message.milestones);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [activeOption, axiosPrivate]);
 
   return (
     <Layout>
@@ -66,20 +76,40 @@ export default function Options() {
               {
                 iconName: 'label',
                 text: '레이블',
-                event: () => setActiveOption(labels),
+                event: () => {
+                  setAddFormActive(false);
+                  setActiveOption(labels);
+                },
               },
               {
                 iconName: 'milestone',
                 text: '마일스톤',
-                event: () => setActiveOption(milestones),
+                event: () => {
+                  setAddFormActive(false);
+                  setActiveOption(milestones);
+                },
               },
             ]}
           />
-          <Button type="button" flexible iconName="plus">
-            레이블 추가
+          <Button
+            type="button"
+            flexible
+            iconName="plus"
+            onClick={() => setAddFormActive((bool) => !bool)}>
+            {activeOption === labels ? '레이블' : '마일스톤'} 추가
           </Button>
         </Toolbar>
-        {activeOption === labels ? <>라벨</> : <>마일스톤</>}
+        {addFormActive &&
+          (activeOption === labels ? (
+            <AddLabel cancel={addCancelHandler} />
+          ) : (
+            <AddMilestone cancel={addCancelHandler} />
+          ))}
+        {activeOption === labels ? (
+          <Labels data={labelData} />
+        ) : (
+          <Milestones data={milestoneData} />
+        )}
       </Main>
     </Layout>
   );

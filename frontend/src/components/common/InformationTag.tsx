@@ -15,7 +15,7 @@ export default function InformationTag({
   iconName?: keyof typeof Icons;
   children?: React.ReactNode;
 }) {
-  const Icon = iconName && Icons[iconName];
+  const Icon = iconName && Icons[iconName] as React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
 
   return (
     <Container $size={size}>
@@ -32,13 +32,13 @@ const Container = styled.span<{ $size: keyof typeof Size }>`
       ? theme.objectStyles.radius.medium
       : theme.objectStyles.radius.large};
   padding: 0px ${({ $size }) => ($size === Size.small ? '8px' : '16px')};
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   height: ${({ $size }) => ($size === Size.small ? '24px' : '32px')};
   color: ${({ theme }) => theme.color.neutral.text.weak};
 
-  & > svg {
+  & svg {
     stroke: ${({ theme }) => theme.color.neutral.text.weak};
   }
 `;

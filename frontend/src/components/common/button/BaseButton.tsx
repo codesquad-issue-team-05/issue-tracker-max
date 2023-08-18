@@ -10,7 +10,6 @@ type ButtonProps = React.HTMLAttributes<HTMLButtonElement> & {
   outline?: boolean;
   ghost?: boolean;
   selected?: boolean;
-  onClick?: () => void;
 };
 
 export default function Button(props: ButtonProps) {
@@ -26,7 +25,9 @@ export default function Button(props: ButtonProps) {
     ...rest
   } = props;
   const hasIcon = iconName !== undefined;
-  const Icon = Icons[iconName ?? 'default'];
+  const Icon = Icons[iconName ?? 'default'] as React.FunctionComponent<
+    React.SVGProps<SVGSVGElement>
+  >;
 
   return (
     <RealButton
@@ -38,7 +39,7 @@ export default function Button(props: ButtonProps) {
       $selected={selected}
       {...rest}>
       {hasIcon && <Icon />}
-      <TextLabel>{children}</TextLabel>
+      <TextLabel $ghost={ghost}>{children}</TextLabel>
     </RealButton>
   );
 }
@@ -52,7 +53,7 @@ type StyledButtonProps = {
 
 const RealButton = styled.button<StyledButtonProps>`
   width: ${({ $flexible }) => ($flexible ? 'auto' : '184px')};
-  height: 48px;
+  min-height: 48px;
   padding: 0 16px;
   display: inline-flex;
   justify-content: center;
@@ -109,7 +110,9 @@ const RealButton = styled.button<StyledButtonProps>`
   ${({ theme, $ghost, $flexible, $selected }) =>
     $ghost &&
     `
+    min-height: 32px;
     padding: ${$flexible ? '0' : '0 16px'};
+    gap: 4px;
     background-color: transparent;
     border: none;
     border-radius: 0;
@@ -140,7 +143,14 @@ const RealButton = styled.button<StyledButtonProps>`
     `}
 `;
 
-const TextLabel = styled.span`
-  padding: 0 8px;
-  text-align: center;
+const TextLabel = styled.span<{ $ghost?: boolean }>`
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  ${({ $ghost }) => {
+    if (!$ghost) {
+      return 'padding: 0 8px;';
+    }
+    return '';
+  }}
 `;
